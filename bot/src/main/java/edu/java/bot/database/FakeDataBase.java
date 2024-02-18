@@ -1,10 +1,10 @@
 package edu.java.bot.database;
 
-import lombok.AllArgsConstructor;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class FakeDataBase {
@@ -28,7 +28,7 @@ public class FakeDataBase {
         }
     }
 
-    public void removeSubscription(Long chatId, URI resource) throws Exception{
+    public void removeSubscription(Long chatId, URI resource) throws Exception {
         if (isRegistered(chatId)) {
             var resources = usersSubscribes.get(chatId);
             resources.remove(resource);

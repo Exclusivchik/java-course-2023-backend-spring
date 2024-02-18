@@ -8,4 +8,6 @@ public interface Command {
     String description();
 
     SendMessage handle(long chatId, String text);
+
+    Command getNextHandler();
 }

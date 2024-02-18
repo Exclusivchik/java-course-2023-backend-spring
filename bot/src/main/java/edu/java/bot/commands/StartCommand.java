@@ -34,4 +34,9 @@ public class StartCommand implements Command {
             return new SendMessage(chatId, unknownCommand);
         }
     }
+
+    @Override
+    public Command getNextHandler() {
+        return nextHandler;
+    }
 }

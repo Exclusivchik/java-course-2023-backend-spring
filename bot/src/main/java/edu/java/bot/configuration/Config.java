@@ -8,6 +8,9 @@ import edu.java.bot.commands.StartCommand;
 import edu.java.bot.commands.TrackCommand;
 import edu.java.bot.commands.UntrackCommand;
 import edu.java.bot.database.FakeDataBase;
+import edu.java.bot.linkvalidators.GithubLinkValidator;
+import edu.java.bot.linkvalidators.LinkValidator;
+import edu.java.bot.linkvalidators.StackOverflowValidator;
 import java.util.HashMap;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -29,13 +32,23 @@ public class Config {
     }
 
     @Bean
-    Command untrackCommand(FakeDataBase fakeDataBase) {
-        return new UntrackCommand(fakeDataBase, null, UNKNOWN_COMMAND);
+    GithubLinkValidator githubLinkValidator() {
+        return new GithubLinkValidator(null);
     }
 
     @Bean
-    Command trackCommand(FakeDataBase fakeDataBase, Command untrackCommand) {
-        return new TrackCommand(fakeDataBase, untrackCommand, UNKNOWN_COMMAND);
+    StackOverflowValidator stackOverflowValidator(LinkValidator githubLinkValidator) {
+        return new StackOverflowValidator(githubLinkValidator);
+    }
+
+    @Bean
+    Command untrackCommand(FakeDataBase fakeDataBase, LinkValidator stackOverflowValidator) {
+        return new UntrackCommand(null, stackOverflowValidator, UNKNOWN_COMMAND);
+    }
+
+    @Bean
+    Command trackCommand(FakeDataBase fakeDataBase, Command untrackCommand, LinkValidator stackOverflowValidator) {
+        return new TrackCommand(untrackCommand, stackOverflowValidator, UNKNOWN_COMMAND);
     }
 
     @Bean

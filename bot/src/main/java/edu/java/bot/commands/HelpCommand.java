@@ -1,8 +1,8 @@
 package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.request.SendMessage;
-import lombok.RequiredArgsConstructor;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class HelpCommand implements Command {
@@ -33,5 +33,10 @@ public class HelpCommand implements Command {
         } else {
             return new SendMessage(chatId, unknownCommand);
         }
+    }
+
+    @Override
+    public Command getNextHandler() {
+        return nextHandler;
     }
 }
