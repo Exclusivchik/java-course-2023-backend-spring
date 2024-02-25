@@ -8,16 +8,16 @@ import java.time.OffsetDateTime;
 public record StackOverflowResponse(
     Owner owner,
     @JsonProperty("last_activity_date")
-    OffsetDateTime lastActivityDay,
+    OffsetDateTime lastActivityDate,
     @JsonProperty("answer_id")
-    Long answerId,
+    long answerId,
     @JsonProperty("question_id")
-    Long questionId
+    long questionId
 ) {
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record Owner(
         @JsonProperty("display_name")
         String displayName
     ) {
-
     }
 }

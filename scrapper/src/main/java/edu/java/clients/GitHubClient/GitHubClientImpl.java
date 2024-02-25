@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.Responses.GitHubResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.reactive.function.client.WebClient;
 
 public class GitHubClientImpl implements GitHubClient {
     @Value(value = "${api.github.defaultUrl}")
@@ -16,6 +16,10 @@ public class GitHubClientImpl implements GitHubClient {
 
     public GitHubClientImpl() {
         webClient = WebClient.builder().baseUrl(defaultUrl).build();
+    }
+
+    public GitHubClientImpl(String baseUrl) {
+        webClient = WebClient.builder().baseUrl(baseUrl).build();
     }
 
     @Override

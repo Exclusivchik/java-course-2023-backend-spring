@@ -1,4 +1,4 @@
-package edu.java.clients.StackOwerflowClient;
+package edu.java.clients.StackOverflowClient;
 
 import edu.java.Responses.StackOverflowResponse;
 import java.util.Optional;

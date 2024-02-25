@@ -1,4 +1,4 @@
-package edu.java.clients.StackOwerflowClient;
+package edu.java.clients.StackOverflowClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +17,10 @@ public class StackOverflowClientImpl implements StackOverflowClient {
         webClient = WebClient.builder().baseUrl(defaultUrl).build();
     }
 
+    public StackOverflowClientImpl(String baseUrl) {
+        webClient = WebClient.builder().baseUrl(baseUrl).build();
+    }
+
     @Override
     public Optional<StackOverflowResponse> fetchData(Long questionId) {
         return Optional.ofNullable(webClient.get()
@@ -25,13 +29,11 @@ public class StackOverflowClientImpl implements StackOverflowClient {
                 .queryParam("order", "desc")
                 .queryParam("sort", "activity")
                 .queryParam("site", "stackoverflow")
-                .build(questionId)
-            )
+                .build(questionId))
             .retrieve()
             .bodyToMono(String.class)
             .mapNotNull(this::parseJson)
-            .block()
-        );
+            .block());
     }
 
     public StackOverflowResponse parseJson(String json) {
