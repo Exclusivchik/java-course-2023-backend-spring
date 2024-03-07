@@ -1,7 +1,6 @@
 package edu.java.bot.clients;
 
 import edu.java.exceptions.ApiException;
-import edu.java.exceptions.NotFoundException;
 import edu.java.models.AddLinkRequest;
 import edu.java.models.ApiErrorResponse;
 import edu.java.models.LinkResponse;
