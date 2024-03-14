@@ -15,7 +15,13 @@ logging:
   config: classpath:log4j2-plain.xml
 
 api:
+  bot:
+    defaultUrl: http://localhost:8090
   github:
     defaultUrl: https://api.github.com
   stackoverflow:
     defaultUrl: https://api.stackexchange.com/2.3
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui

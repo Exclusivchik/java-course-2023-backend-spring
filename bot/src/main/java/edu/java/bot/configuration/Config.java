@@ -1,6 +1,7 @@
 package edu.java.bot.configuration;
 
 import com.pengrad.telegrambot.TelegramBot;
+import edu.java.bot.clients.ScrapperClient;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.HelpCommand;
 import edu.java.bot.commands.ListCommand;
@@ -14,11 +15,15 @@ import edu.java.bot.linkvalidators.StackOverflowValidator;
 import java.util.HashMap;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class Config {
+    @Value(value = "${api.scrapper.defaultUrl}")
+    private String defaultScrapperUrl;
     private static final String UNKNOWN_COMMAND = "Неизвестная команда";
 
     @Bean
@@ -66,5 +71,15 @@ public class Config {
         List<String> commandsStrings = commands.stream()
             .map(command -> command.name() + " - " + command.description() + '\n').toList();
         return new HelpCommand(commandsStrings, listCommand, UNKNOWN_COMMAND);
+    }
+
+    @Bean
+    WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+
+    @Bean
+    ScrapperClient scrapperClient(WebClient.Builder webClientBuilder) {
+        return new ScrapperClient(defaultScrapperUrl, webClientBuilder);
     }
 }
