@@ -1,6 +1,6 @@
 package edu.java.configuration;
 
-import edu.java.client.BotClient;
+import edu.java.clients.BotClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
