@@ -2,7 +2,6 @@ package edu.java.api.domain.repository.jdbc;
 
 import edu.java.api.domain.dto.LinkDto;
 import edu.java.api.domain.mappers.LinkDtoRowMapper;
-import edu.java.api.domain.repository.LinkRepository;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import java.net.URI;
@@ -16,13 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcLinkRepository implements LinkRepository {
+public class JdbcLinkRepository {
     private final JdbcTemplate jdbcTemplate;
     private final String dataAccessMessage = "Server error";
     private final String dataAccessDescription = "Ошибка сервера: нет доступа к данным";
     private final String getQuery = "SELECT * FROM link WHERE url = ?";
 
-    @Override
     @Transactional
     public Long add(URI uri) {
         try {
@@ -39,7 +37,6 @@ public class JdbcLinkRepository implements LinkRepository {
         }
     }
 
-    @Override
     @Transactional
     public LinkDto findByUrl(URI link) {
         try {
@@ -86,7 +83,6 @@ public class JdbcLinkRepository implements LinkRepository {
         }
     }
 
-    @Override
     @Transactional
     public List<LinkDto> findAll() {
         return jdbcTemplate.query(
@@ -95,7 +91,6 @@ public class JdbcLinkRepository implements LinkRepository {
         );
     }
 
-    @Override
     @Transactional
     public void updateLink(URI url, OffsetDateTime lastUpdate) {
         try {
@@ -111,7 +106,6 @@ public class JdbcLinkRepository implements LinkRepository {
         }
     }
 
-    @Override
     @Transactional
     public void setLastCheck(URI checkedLink) {
         try {
@@ -127,7 +121,6 @@ public class JdbcLinkRepository implements LinkRepository {
         }
     }
 
-    @Override
     @Transactional
     public List<LinkDto> findByLastCheck(int minutes) {
         try {
@@ -143,7 +136,6 @@ public class JdbcLinkRepository implements LinkRepository {
         }
     }
 
-    @Override
     @Transactional
     public boolean isExist(URI url) {
         try {

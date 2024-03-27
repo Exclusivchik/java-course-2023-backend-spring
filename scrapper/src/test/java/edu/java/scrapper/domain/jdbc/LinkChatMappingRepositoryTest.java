@@ -1,9 +1,9 @@
-package edu.java.scrapper.domain;
+package edu.java.scrapper.domain.jdbc;
 
 import edu.java.api.domain.dto.LinkChatMappingDto;
-import edu.java.api.domain.repository.ChatRepository;
-import edu.java.api.domain.repository.LinkChatMappingRepository;
-import edu.java.api.domain.repository.LinkRepository;
+import edu.java.api.domain.repository.jdbc.JdbcChatRepository;
+import edu.java.api.domain.repository.jdbc.JdbcLinkChatMappingRepository;
+import edu.java.api.domain.repository.jdbc.JdbcLinkRepository;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import edu.java.models.LinkResponse;
@@ -21,11 +21,11 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 @SpringBootTest
 public class LinkChatMappingRepositoryTest extends IntegrationTest {
     @Autowired
-    private ChatRepository jdbcChatRepository;
+    private JdbcChatRepository jdbcChatRepository;
     @Autowired
-    private LinkRepository jdbcLinkRepository;
+    private JdbcLinkRepository jdbcLinkRepository;
     @Autowired
-    private LinkChatMappingRepository jdbcLinkChatMappingRepository;
+    private JdbcLinkChatMappingRepository jdbcLinkChatMappingRepository;
 
     @Test
     @Transactional

@@ -1,7 +1,6 @@
 package edu.java.api.domain.repository.jdbc;
 
 import edu.java.api.domain.dto.LinkChatMappingDto;
-import edu.java.api.domain.repository.LinkChatMappingRepository;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import edu.java.models.LinkResponse;
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcLinkChatMappingRepository implements LinkChatMappingRepository {
+public class JdbcLinkChatMappingRepository {
     private final JdbcTemplate template;
     private final String dataAccessMessage = "Server error";
     private final String dataAccessDescription = "Ошибка сервера: нет доступа к данным";
@@ -66,7 +65,6 @@ public class JdbcLinkChatMappingRepository implements LinkChatMappingRepository 
         }
     }
 
-    @Override
     @Transactional
     public List<LinkChatMappingDto> findAll() {
         try {
@@ -85,7 +83,6 @@ public class JdbcLinkChatMappingRepository implements LinkChatMappingRepository 
         }
     }
 
-    @Override
     @Transactional
     public List<LinkResponse> findAllByChatId(Long chatId) {
         try {
@@ -114,7 +111,6 @@ public class JdbcLinkChatMappingRepository implements LinkChatMappingRepository 
         }
     }
 
-    @Override
     @Transactional
     public List<LinkChatMappingDto> findAllByLinkId(Long linkId) {
         try {
