@@ -1,4 +1,4 @@
-package edu.java.client;
+package edu.java.clients;
 
 import edu.java.exceptions.ApiException;
 import edu.java.models.ApiErrorResponse;
@@ -32,6 +32,6 @@ public class BotClient {
                     )))
             )
             .bodyToMono(String.class)
-            .blockOptional();
+            .block();
     }
 }

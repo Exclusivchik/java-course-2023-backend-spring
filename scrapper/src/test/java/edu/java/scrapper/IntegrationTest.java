@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.time.Duration;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -15,6 +16,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
@@ -25,7 +27,11 @@ public abstract class IntegrationTest {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("scrapper")
             .withUsername("postgres")
-            .withPassword("postgres");
+            .withPassword("postgres")
+                .waitingFor(
+                    Wait.forListeningPort()
+                        .withStartupTimeout(Duration.ofSeconds(30))
+                );
         POSTGRES.start();
 
         runMigrations(POSTGRES);

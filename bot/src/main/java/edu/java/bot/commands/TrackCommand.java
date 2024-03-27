@@ -1,15 +1,18 @@
 package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.clients.ScrapperClient;
 import edu.java.bot.linkvalidators.LinkValidator;
+import edu.java.exceptions.ApiException;
+import edu.java.models.AddLinkRequest;
 import java.net.URI;
-import java.net.URISyntaxException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class TrackCommand implements Command {
     private final Command nextHandler;
     private final LinkValidator linkValidator;
+    private final ScrapperClient scrapperClient;
     private final String unknownCommand;
 
     @Override
@@ -25,24 +28,31 @@ public class TrackCommand implements Command {
     @Override
     public SendMessage handle(long chatId, String text) {
         if (text.startsWith(this.name())) {
-            String link = text.substring(this.name().length()).strip();
+            String fullUri = text.substring(this.name().length()).strip();
             String scheme = "https://";
-            String fullUri = link;
-            if (!link.startsWith(scheme)) {
-                fullUri = scheme + link;
+            if (!fullUri.startsWith(scheme)) {
+                fullUri = scheme + fullUri;
             }
-            try {
-                URI uri = new URI(fullUri);
-                if (linkValidator.isValid(uri)) {
-                    return new SendMessage(chatId, "Ссылка успешно добавлена");
+            if (linkValidator.isValid(fullUri)) {
+                URI link = URI.create(fullUri);
+                try {
+                    scrapperClient.addLink(chatId, new AddLinkRequest(link));
+                    return new SendMessage(chatId, "Ссылка добавлена успешно");
+                } catch (ApiException e) {
+                    return new SendMessage(chatId, e.getDescription());
                 }
-            } catch (URISyntaxException e) {
+            } else {
+                return new SendMessage(chatId, "Ссылка некорректна");
             }
-            return new SendMessage(chatId, "Проверьте корректность ссылки");
-        } else if (nextHandler != null) {
-            return nextHandler.handle(chatId, text);
+
         } else {
-            return new SendMessage(chatId, unknownCommand);
+            SendMessage sendMessage;
+            if (nextHandler != null) {
+                sendMessage = nextHandler.handle(chatId, text);
+            } else {
+                sendMessage = new SendMessage(chatId, unknownCommand);
+            }
+            return sendMessage;
         }
     }
 
