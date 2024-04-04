@@ -8,13 +8,10 @@ import edu.java.bot.commands.ListCommand;
 import edu.java.bot.commands.StartCommand;
 import edu.java.bot.commands.TrackCommand;
 import edu.java.bot.commands.UntrackCommand;
-import edu.java.bot.database.FakeDataBase;
 import edu.java.bot.linkvalidators.GithubLinkValidator;
 import edu.java.bot.linkvalidators.LinkValidator;
 import edu.java.bot.linkvalidators.StackOverflowValidator;
-import java.util.HashMap;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,18 +19,24 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class Config {
-    @Value(value = "${api.scrapper.defaultUrl}")
-    private String defaultScrapperUrl;
     private static final String UNKNOWN_COMMAND = "Неизвестная команда";
 
     @Bean
-    TelegramBot telegramBot(@NotNull ApplicationConfig applicationConfig) {
+    TelegramBot telegramBot(ApplicationConfig applicationConfig) {
         return new TelegramBot(applicationConfig.telegramToken());
     }
 
     @Bean
-    FakeDataBase fakeDataBase() {
-        return new FakeDataBase(new HashMap<>(), "Вы не зарегистрированы");
+    WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+
+    @Bean
+    ScrapperClient scrapperClient(
+        @Value(value = "${api.scrapper.defaultUrl}") String defaultScrapperUrl,
+        WebClient.Builder webClientBuilder
+    ) {
+        return new ScrapperClient(defaultScrapperUrl, webClientBuilder);
     }
 
     @Bean
@@ -47,23 +50,23 @@ public class Config {
     }
 
     @Bean
-    Command untrackCommand(FakeDataBase fakeDataBase, LinkValidator stackOverflowValidator) {
-        return new UntrackCommand(null, stackOverflowValidator, UNKNOWN_COMMAND);
+    Command untrackCommand(LinkValidator stackOverflowValidator, ScrapperClient scrapperClient) {
+        return new UntrackCommand(null, stackOverflowValidator, scrapperClient, UNKNOWN_COMMAND);
     }
 
     @Bean
-    Command trackCommand(FakeDataBase fakeDataBase, Command untrackCommand, LinkValidator stackOverflowValidator) {
-        return new TrackCommand(untrackCommand, stackOverflowValidator, UNKNOWN_COMMAND);
+    Command trackCommand(LinkValidator stackOverflowValidator, Command untrackCommand, ScrapperClient scrapperClient) {
+        return new TrackCommand(untrackCommand, stackOverflowValidator, scrapperClient, UNKNOWN_COMMAND);
     }
 
     @Bean
-    Command startCommand(FakeDataBase fakeDataBase, Command trackCommand) {
-        return new StartCommand(fakeDataBase, trackCommand, UNKNOWN_COMMAND);
+    Command startCommand(Command trackCommand, ScrapperClient scrapperClient) {
+        return new StartCommand(trackCommand, scrapperClient, UNKNOWN_COMMAND);
     }
 
     @Bean
-    Command listCommand(FakeDataBase fakeDataBase, Command startCommand) {
-        return new ListCommand(fakeDataBase, startCommand, UNKNOWN_COMMAND);
+    Command listCommand(Command startCommand, ScrapperClient scrapperClient) {
+        return new ListCommand(startCommand, scrapperClient, UNKNOWN_COMMAND);
     }
 
     @Bean
@@ -71,15 +74,5 @@ public class Config {
         List<String> commandsStrings = commands.stream()
             .map(command -> command.name() + " - " + command.description() + '\n').toList();
         return new HelpCommand(commandsStrings, listCommand, UNKNOWN_COMMAND);
-    }
-
-    @Bean
-    WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
-    }
-
-    @Bean
-    ScrapperClient scrapperClient(WebClient.Builder webClientBuilder) {
-        return new ScrapperClient(defaultScrapperUrl, webClientBuilder);
     }
 }

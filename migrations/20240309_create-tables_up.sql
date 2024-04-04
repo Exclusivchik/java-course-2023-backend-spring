@@ -1,9 +1,10 @@
 -- Файл миграции: создание таблицы ссылок и таблицы чатов
 create table link
 (
-    link_id    bigint generated always as identity not null,
-    url        varchar(255)                        not null,
-    last_check timestamp with time zone,
+    link_id     bigint generated always as identity not null,
+    url         varchar(255)                        not null,
+    last_check  timestamp with time zone,
+    last_update timestamp with time zone,
 
     primary key (link_id),
     unique (url)

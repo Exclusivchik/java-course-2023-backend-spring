@@ -40,8 +40,7 @@ public class GitHubClientImpl implements GitHubClient {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            List<GitHubResponse> responseList = objectMapper.readValue(json, new TypeReference<>() {
-            });
+            List<GitHubResponse> responseList = objectMapper.readValue(json, new TypeReference<>() {});
             return responseList.getFirst();
         } catch (Exception e) {
             return null;
