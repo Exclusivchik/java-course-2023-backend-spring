@@ -36,7 +36,7 @@ public class UntrackCommand implements Command {
             if (linkValidator.isValid(fullUri)) {
                 URI link = URI.create(fullUri);
                 try {
-                    scrapperClient.deleteLink(chatId, new RemoveLinkRequest(link));
+                    scrapperClient.retryDeleteLink(chatId, new RemoveLinkRequest(link));
                     return new SendMessage(chatId, "Подписка отменена");
                 } catch (ApiException e) {
                     return new SendMessage(chatId, e.getDescription());

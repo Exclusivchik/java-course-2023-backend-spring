@@ -36,7 +36,7 @@ public class TrackCommand implements Command {
             if (linkValidator.isValid(fullUri)) {
                 URI link = URI.create(fullUri);
                 try {
-                    scrapperClient.addLink(chatId, new AddLinkRequest(link));
+                    scrapperClient.retryAddLink(chatId, new AddLinkRequest(link));
                     return new SendMessage(chatId, "Ссылка добавлена успешно");
                 } catch (ApiException e) {
                     return new SendMessage(chatId, e.getDescription());

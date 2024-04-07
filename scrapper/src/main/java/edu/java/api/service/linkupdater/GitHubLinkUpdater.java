@@ -28,7 +28,7 @@ public class GitHubLinkUpdater implements LinkUpdater {
         String[] splitLink = link.url().getPath().split("/");
         String owner = splitLink[splitLink.length - 2];
         String repo = splitLink[splitLink.length - 1];
-        GitHubResponse response = gitHubClient.fetchData(owner, repo)
+        GitHubResponse response = gitHubClient.retryFetchRepositoryEvents(owner, repo)
             .orElseThrow(IllegalArgumentException::new);
         if (link.lastUpdate().isAfter(response.createdAt())) {
             List<LinkChatMappingDto> joinTableDtos = linkChatMappingRepository.findAllByLinkId(link.linkId());
@@ -37,7 +37,7 @@ public class GitHubLinkUpdater implements LinkUpdater {
                 return 1;
             }
             List<Long> tgChatIds = joinTableDtos.stream().map(LinkChatMappingDto::chatId).toList();
-            botClient.postUpdates(new LinkUpdate(
+            botClient.retryPostUpdates(new LinkUpdate(
                 link.linkId(),
                 link.url(),
                 getDescription(response),
