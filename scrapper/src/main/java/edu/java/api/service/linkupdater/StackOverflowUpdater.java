@@ -29,7 +29,7 @@ public class StackOverflowUpdater implements LinkUpdater {
     public int process(LinkDto link) {
         String[] splitLink = link.url().getPath().split("/");
         Long questionId = Long.parseLong(splitLink[splitLink.length - 1]);
-        StackOverflowResponse response = stackOverflowClient.fetchData(questionId)
+        StackOverflowResponse response = stackOverflowClient.retryFetchData(questionId)
             .orElseThrow(IllegalArgumentException::new);
         if (link.lastUpdate().isAfter(response.lastActivityDate())) {
             List<LinkChatMappingDto> joinTableDtos = joinTableRepository.findAllByLinkId(link.linkId());
@@ -38,7 +38,7 @@ public class StackOverflowUpdater implements LinkUpdater {
                 return 1;
             }
             List<Long> tgChatIds = joinTableDtos.stream().map(LinkChatMappingDto::chatId).toList();
-            botClient.postUpdates(new LinkUpdate(
+            botClient.retryPostUpdates(new LinkUpdate(
                 link.linkId(),
                 link.url(),
                 getDescription(response),

@@ -5,4 +5,6 @@ import java.util.Optional;
 
 public interface GitHubClient {
     Optional<GitHubResponse> fetchData(String owner, String repo);
+
+    Optional<GitHubResponse> retryFetchRepositoryEvents(String owner, String repo);
 }

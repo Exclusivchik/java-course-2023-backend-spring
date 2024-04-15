@@ -5,4 +5,6 @@ import java.util.Optional;
 
 public interface StackOverflowClient {
     Optional<StackOverflowResponse> fetchData(Long questionId);
+
+    Optional<StackOverflowResponse> retryFetchData(long questionId);
 }
